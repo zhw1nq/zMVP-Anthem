@@ -2,7 +2,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using static MVPAnthem.MVPAnthem;
 
@@ -10,25 +9,32 @@ namespace MVPAnthem;
 
 public static class Events
 {
-    private static Timer? _centerHtmlTimer, _centerTimer, _alertTimer;
+    private static Timer? _centerHtmlTimer;
+    private static bool _isCenterHtmlActive;
+    private static string _htmlMessage = "";
 
     // Helper method to get localized message with fallback to mvp.default
-    private static string GetLocalizedMessage(string mvpKey, string messageType)
+    private static string? GetLocalizedMessage(string mvpKey, string messageType)
     {
         var localizer = Instance.Localizer;
-        var specificKey = $"{mvpKey}.{messageType}";
-        var defaultKey = $"mvp.default.{messageType}";
 
         // Try specific key first (e.g., "mvp.1.chat")
+        var specificKey = $"{mvpKey}.{messageType}";
         var msg = localizer[specificKey];
-        if (!string.IsNullOrEmpty(msg))
+
+        // CSSharp localizer returns the key itself when not found
+        if (!string.IsNullOrEmpty(msg) && msg != specificKey)
             return msg;
 
         // Fallback to default (e.g., "mvp.default.chat")
-        return localizer[defaultKey];
+        var defaultKey = $"mvp.default.{messageType}";
+        var defaultMsg = localizer[defaultKey];
+
+        if (!string.IsNullOrEmpty(defaultMsg) && defaultMsg != defaultKey)
+            return defaultMsg;
+
+        return null;
     }
-    private static bool _isCenterHtmlActive, _isCenterActive, _isAlertActive;
-    private static string _htmlMessage = "", _centerMessage = "", _alertMessage = "";
 
     public static void Initialize()
     {
@@ -41,8 +47,6 @@ public static class Events
     public static void Dispose()
     {
         _centerHtmlTimer?.Kill();
-        _centerTimer?.Kill();
-        _alertTimer?.Kill();
     }
 
     private static HookResult OnPlayerConnect(EventPlayerConnectFull @event, GameEventInfo info)
@@ -121,41 +125,15 @@ public static class Events
             if (mvpSettings.ShowChatMessage)
             {
                 var msg = GetLocalizedMessage(mvpKey, "chat");
-                if (!string.IsNullOrEmpty(msg))
+                if (msg != null)
                     p.PrintToChat(localizer["prefix"] + string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName));
-            }
-
-            // Center message
-            if (mvpSettings.ShowCenterMessage)
-            {
-                var msg = GetLocalizedMessage(mvpKey, "center");
-                if (!string.IsNullOrEmpty(msg))
-                {
-                    _centerMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
-                    _isCenterActive = true;
-                    _centerTimer?.Kill();
-                    _centerTimer = Instance.AddTimer(timer.CenterDuration, () => { _isCenterActive = false; _centerTimer = null; });
-                }
-            }
-
-            // Alert message
-            if (mvpSettings.ShowAlertMessage)
-            {
-                var msg = GetLocalizedMessage(mvpKey, "alert");
-                if (!string.IsNullOrEmpty(msg))
-                {
-                    _alertMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
-                    _isAlertActive = true;
-                    _alertTimer?.Kill();
-                    _alertTimer = Instance.AddTimer(timer.AlertDuration, () => { _isAlertActive = false; _alertTimer = null; });
-                }
             }
 
             // HTML message
             if (mvpSettings.ShowHtmlMessage)
             {
                 var msg = GetLocalizedMessage(mvpKey, "html");
-                if (!string.IsNullOrEmpty(msg))
+                if (msg != null)
                 {
                     _htmlMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
                     _isCenterHtmlActive = true;
@@ -165,7 +143,7 @@ public static class Events
             }
         }
 
-        if (_isCenterHtmlActive || _isCenterActive || _isAlertActive)
+        if (_isCenterHtmlActive)
             TickMessages();
 
         return HookResult.Continue;
@@ -175,21 +153,14 @@ public static class Events
     {
         Server.NextFrame(() =>
         {
-            if (!_isCenterHtmlActive && !_isCenterActive && !_isAlertActive) return;
+            if (!_isCenterHtmlActive) return;
 
             foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
             {
-                if (_isCenterHtmlActive)
-                    p.PrintToCenterHtml($"{_htmlMessage}</div>");
-
-                if (_isCenterActive)
-                    p.PrintToCenter(_centerMessage);
-
-                if (_isAlertActive)
-                    p.PrintToCenter(_alertMessage);
+                p.PrintToCenterHtml($"{_htmlMessage}</div>");
             }
 
-            if (_isCenterHtmlActive || _isCenterActive || _isAlertActive)
+            if (_isCenterHtmlActive)
                 TickMessages();
         });
     }

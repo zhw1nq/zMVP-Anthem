@@ -19,8 +19,6 @@
         ]
     },
     "Timer": {
-        "CenterHtmlDuration": 7,
-        "CenterDuration": 7,
-        "AlertDuration": 7
+        "CenterHtmlDuration": 7
     }
 }

@@ -43,12 +43,6 @@ public class Timer_Config
 {
     [JsonPropertyName("CenterHtmlDuration")]
     public int CenterHtmlDuration { get; set; } = 7;
-
-    [JsonPropertyName("CenterDuration")]
-    public int CenterDuration { get; set; } = 7;
-
-    [JsonPropertyName("AlertDuration")]
-    public int AlertDuration { get; set; } = 7;
 }
 
 public class CategorySettings
@@ -63,8 +57,6 @@ public class MVP_Settings
     public string MVPSound { get; set; } = string.Empty;
     public bool EnablePreview { get; set; } = true;
     public bool ShowChatMessage { get; set; } = true;
-    public bool ShowCenterMessage { get; set; } = true;
-    public bool ShowAlertMessage { get; set; } = true;
     public bool ShowHtmlMessage { get; set; } = true;
     public string SteamID { get; set; } = string.Empty;
     public List<string> Flags { get; set; } = new();
@@ -156,9 +148,7 @@ public static class ConfigLoader
             },
             Timer = new Timer_Config
             {
-                CenterHtmlDuration = 7,
-                CenterDuration = 7,
-                AlertDuration = 7
+                CenterHtmlDuration = 7
             }
         };
 
@@ -353,8 +343,7 @@ public static class MVPSettingsLoader
                                     MVPSound = "MVP.001_bamia",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
-                                    ShowCenterMessage = false,
-                                    ShowAlertMessage = false,
+
                                     ShowHtmlMessage = true,
                                     SteamID = "",
                                     Flags = new List<string>()
@@ -367,8 +356,7 @@ public static class MVPSettingsLoader
                                     MVPSound = "MVP.002_ace",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
-                                    ShowCenterMessage = false,
-                                    ShowAlertMessage = false,
+
                                     ShowHtmlMessage = true,
                                     SteamID = "",
                                     Flags = new List<string>()
@@ -390,8 +378,7 @@ public static class MVPSettingsLoader
                                     MVPSound = "MVP.vip_001",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
-                                    ShowCenterMessage = false,
-                                    ShowAlertMessage = false,
+
                                     ShowHtmlMessage = true,
                                     SteamID = "",
                                     Flags = new List<string>()

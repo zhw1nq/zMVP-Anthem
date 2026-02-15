@@ -9,8 +9,6 @@
                     "MVPSound": "MVP.001_bamia",
                     "EnablePreview": true,
                     "ShowChatMessage": true,
-                    "ShowCenterMessage": false,
-                    "ShowAlertMessage": false,
                     "ShowHtmlMessage": true,
                     "SteamID": "",
                     "Flags": []
@@ -20,8 +18,6 @@
                     "MVPSound": "MVP.002_ace",
                     "EnablePreview": true,
                     "ShowChatMessage": true,
-                    "ShowCenterMessage": false,
-                    "ShowAlertMessage": false,
                     "ShowHtmlMessage": true,
                     "SteamID": "",
                     "Flags": []
@@ -38,8 +34,6 @@
                     "MVPSound": "MVP.vip_001",
                     "EnablePreview": true,
                     "ShowChatMessage": true,
-                    "ShowCenterMessage": false,
-                    "ShowAlertMessage": false,
                     "ShowHtmlMessage": true,
                     "SteamID": "",
                     "Flags": []
