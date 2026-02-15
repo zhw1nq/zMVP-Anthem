@@ -9,7 +9,7 @@ public partial class MVPAnthem : BasePlugin
 {
     public override string ModuleAuthor => "T3Marius & zhw1nq";
     public override string ModuleName => "zMVP-Anthem";
-    public override string ModuleVersion => "3.0.0";
+    public override string ModuleVersion => "3.0.1";
 
     public static MVPAnthem Instance { get; set; } = new();
     public PluginConfig Config { get; set; } = new();

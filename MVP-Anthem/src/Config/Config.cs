@@ -7,7 +7,7 @@ namespace MVPAnthem;
 
 public class PluginConfig
 {
-    public string Version { get; set; } = "1.0.0";
+    public string Version { get; set; } = "3.0.1";
     public Settings_Config Settings { get; set; } = new();
     public Database_Config Database { get; set; } = new();
     public Commands_Config Commands { get; set; } = new();
@@ -135,7 +135,7 @@ public static class ConfigLoader
 
         var defaultConfig = new PluginConfig
         {
-            Version = "1.0.0",
+            Version = "3.0.1",
             Settings = new Settings_Config
             {
                 DisablePlayerDefaultMVP = true,

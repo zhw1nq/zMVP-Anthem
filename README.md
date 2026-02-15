@@ -35,8 +35,10 @@ A Counter-Strike 2 plugin that allows players to select custom MVP anthems with 
 
 ```json
 {
+  "Version": "3.0.1",
   "Settings": {
-    "DisablePlayerDefaultMVP": true
+    "DisablePlayerDefaultMVP": true,
+    "CDN_URL": "https://cdn.vhming.com/json/fetch/mvp.json"
   },
   "Database": {
     "Host": "localhost",
@@ -46,21 +48,27 @@ A Counter-Strike 2 plugin that allows players to select custom MVP anthems with 
     "Password": "",
     "SslMode": "None"
   },
-  "MVPSettings": {
-    "PUBLIC MVP": {
-      "CategoryFlags": [],
-      "MVPs": {
-        "mvp.1": {
-          "MVPName": "Flawless",
-          "MVPSound": "MVP.001_bamia",
-          "EnablePreview": true,
-          "Flags": []
-        }
-      }
-    }
+  "Commands": {
+    "MVPCommands": [
+       "mvp",
+       "music"
+    ]
+  },
+  "Timer": {
+    "CenterHtmlDuration": 7,
+    "CenterDuration": 7,
+    "AlertDuration": 7
   }
 }
 ```
+
+## Changelog
+
+### v3.0.1
+
+- **Fixed:** Critical thread safety issue causing "Native invoked on a non-main thread" errors during load and command execution
+- **Added:** Configurable `CDN_URL` in `config.json` to customize MVP settings source
+- **Improved:** Code quality and stability optimizations
 
 ## Authors
 
