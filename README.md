@@ -64,6 +64,12 @@ A Counter-Strike 2 plugin that allows players to select custom MVP anthems with 
 
 ## Changelog
 
+### v3.0.2
+
+- **Removed:** `ShowCenterMessage` and `ShowAlertMessage` (only Chat + HTML messages remain)
+- **Removed:** `CenterDuration` and `AlertDuration` timer configs
+- **Fixed:** Localization fallback — missing MVP-specific keys now auto-fallback to `mvp.default.*`
+
 ### v3.0.1
 
 - **Fixed:** Critical thread safety issue causing "Native invoked on a non-main thread" errors during load and command execution
