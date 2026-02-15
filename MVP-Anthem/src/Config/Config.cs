@@ -24,6 +24,9 @@ public class Settings_Config
 {
     [JsonPropertyName("DisablePlayerDefaultMVP")]
     public bool DisablePlayerDefaultMVP { get; set; } = true;
+
+    [JsonPropertyName("CDN_URL")]
+    public string CDN_URL { get; set; } = "https://cdn.vhming.com/json/fetch/mvp.json";
 }
 
 public class Database_Config
@@ -135,7 +138,8 @@ public static class ConfigLoader
             Version = "1.0.0",
             Settings = new Settings_Config
             {
-                DisablePlayerDefaultMVP = true
+                DisablePlayerDefaultMVP = true,
+                CDN_URL = "https://cdn.vhming.com/json/fetch/mvp.json"
             },
             Database = new Database_Config
             {
@@ -171,7 +175,6 @@ public static class ConfigLoader
 
 public static class MVPSettingsLoader
 {
-    private const string CDN_URL = "https://cdn.vhming.com/json/fetch/mvp.json";
     private static readonly string MVPSettingsPath;
     private static readonly HttpClient HttpClient = new();
 
@@ -204,11 +207,14 @@ public static class MVPSettingsLoader
             localConfig = LoadFromFile();
         }
 
+        // Get CDN URL from config
+        string cdnUrl = MVPAnthem.Instance.Config.Settings.CDN_URL;
+
         // Try to fetch from CDN
         try
         {
-            Console.WriteLine("[MVP-Anthem] Checking for MVP settings updates from CDN...");
-            var cdnConfig = await FetchFromCDNAsync();
+            Console.WriteLine($"[MVP-Anthem] Checking for MVP settings updates from CDN: {cdnUrl}");
+            var cdnConfig = await FetchFromCDNAsync(cdnUrl);
 
             if (cdnConfig != null)
             {
@@ -246,11 +252,11 @@ public static class MVPSettingsLoader
         return defaultConfig;
     }
 
-    private static async Task<MVPSettingsConfig?> FetchFromCDNAsync()
+    private static async Task<MVPSettingsConfig?> FetchFromCDNAsync(string cdnUrl)
     {
         try
         {
-            var response = await HttpClient.GetAsync(CDN_URL);
+            var response = await HttpClient.GetAsync(cdnUrl);
             response.EnsureSuccessStatusCode();
 
             string jsonContent = await response.Content.ReadAsStringAsync();

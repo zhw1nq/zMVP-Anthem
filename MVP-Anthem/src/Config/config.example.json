@@ -1,7 +1,8 @@
 {
     "Version": "1.0.0",
     "Settings": {
-        "DisablePlayerDefaultMVP": true
+        "DisablePlayerDefaultMVP": true,
+        "CDN_URL": "https://cdn.vhming.com/json/fetch/mvp.json"
     },
     "Database": {
         "Host": "localhost",

@@ -24,6 +24,10 @@ public partial class MVPAnthem : BasePlugin
         Menu = new KitsuneMenu(this);
         Config = ConfigLoader.Load();
 
+        // Force static constructor to run on the main thread
+        // (it calls Server.GameDirectory which is a native CS2 API)
+        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MVPSettingsLoader).TypeHandle);
+
         // Load MVP settings from CDN or local file
         Task.Run(async () =>
         {

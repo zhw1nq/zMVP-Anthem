@@ -66,11 +66,8 @@ public static class Events
         var player = @event.Userid;
         if (player == null || !player.IsValid) return HookResult.Continue;
 
-        _ = Task.Run(async () =>
-        {
-            await Instance.PlayerCache.FlushPlayerAsync(player);
-            Server.NextFrame(() => Instance.PlayerCache.RemovePlayer(player));
-        });
+        _ = Task.Run(async () => await Instance.PlayerCache.FlushPlayerAsync(player));
+        Server.NextFrame(() => Instance.PlayerCache.RemovePlayer(player));
 
         return HookResult.Continue;
     }

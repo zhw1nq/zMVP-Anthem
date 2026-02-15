@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Admin;
 using Microsoft.Extensions.Logging;
@@ -41,14 +42,26 @@ public static class Commands
         {
             try
             {
+                int slot = player.Slot;
                 var newSettings = await MVPSettingsLoader.LoadOrFetchAsync();
                 Instance.MVPSettings = newSettings;
-                player.PrintToChat($"{Instance.Localizer["prefix"]}MVP settings updated successfully! Version: {newSettings.Version}");
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Instance.Localizer["prefix"]}MVP settings updated successfully! Version: {newSettings.Version}");
+                });
                 Instance.Logger.LogInformation($"[MVP-Anthem] Admin {player.PlayerName} forced MVP settings fetch");
             }
             catch (Exception ex)
             {
-                player.PrintToChat($"{Instance.Localizer["prefix"]}Failed to fetch MVP settings: {ex.Message}");
+                int slot = player.Slot;
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Instance.Localizer["prefix"]}Failed to fetch MVP settings: {ex.Message}");
+                });
                 Instance.Logger.LogError($"[MVP-Anthem] Error fetching MVP settings: {ex.Message}");
             }
         });
@@ -71,14 +84,26 @@ public static class Commands
         {
             try
             {
+                int slot = player.Slot;
                 var newSettings = await MVPSettingsLoader.LoadOrFetchAsync();
                 Instance.MVPSettings = newSettings;
-                player.PrintToChat($"{Instance.Localizer["prefix"]}MVP settings reloaded successfully! Version: {newSettings.Version}");
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Instance.Localizer["prefix"]}MVP settings reloaded successfully! Version: {newSettings.Version}");
+                });
                 Instance.Logger.LogInformation($"[MVP-Anthem] Admin {player.PlayerName} reloaded MVP settings");
             }
             catch (Exception ex)
             {
-                player.PrintToChat($"{Instance.Localizer["prefix"]}Failed to reload MVP settings: {ex.Message}");
+                int slot = player.Slot;
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Instance.Localizer["prefix"]}Failed to reload MVP settings: {ex.Message}");
+                });
                 Instance.Logger.LogError($"[MVP-Anthem] Error reloading MVP settings: {ex.Message}");
             }
         });
