@@ -1,75 +1,72 @@
-# MVP Anthem plugin
+# zMVP-Anthem
 
-# Video Tutorial For Creating Workshop Addon:
-- [CLICK HERE](https://youtu.be/ELnCfj0xGQ8)
+A Counter-Strike 2 plugin that allows players to select custom MVP anthems with a modern menu interface.
 
-# Requirements
-- **[** [**CounterStrikeSharp**](https://github.com/roflmuffin/CounterStrikeSharp) **]**
-- **[** [**MultiAddonManager**](https://github.com/Source2ZE/MultiAddonManager) **]**
-- **[** [**CS2ScreenMenuAPI**](https://github.com/T3Marius/CS2ScreenMenuAPI) **]**
-- **[** [**T3Menu-API**](https://github.com/T3Marius/T3Menu-API) **]**
-- **[** [**ClientPrefsAPI**](https://github.com/Cruze03/Clientprefs) **]**
+## Features
 
-## You use for testing my WorkshopAddon: **[** [**Workshop**](https://steamcommunity.com/sharedfiles/filedetails/?id=3450055137) **]**
-- Just add the addon id in multiaddongmanager.cfg and you can use the 2 mvp's.
+- 🎵 Custom MVP anthems per player
+- 📂 Category-based MVP organization with flag/permission support
+- 🎮 In-game menu powered by KitsuneMenu
+- 💾 MySQL database for persistent preferences
+- ⚡ In-memory cache with dirty-flag batching (writes only on disconnect/map end)
+- 🔐 Per-MVP access control via SteamID, flags, or groups
 
-# Basic Config:
-```toml
+## Requirements
 
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
+- [KitsuneMenu](https://github.com/KitsuneLab-Development/KitsuneMenu)
+- MySQL / MariaDB
 
-    # MVP Configuration.
+## Installation
 
-    [Settings]
-    MenuType = "screen"  # screen, t3           # screen is the default menu, if you don't wanna use t3menu don't even add the shared of it.
-    DefaultVolume = 0.4             # this volume will be set to players who don't have one setted.
-    GiveRandomMVP = true            # when a player with no mvp joins the server, a random MVP is assinged to him.
-    DisablePlayerDefaultMVP = true  # with this on true the player mvp from steam will be disabled.
-    SoundEventFiles = ["soundevents/mvp_anthem.vsndevts"]            # VERY IMPORTANT: In order for the sounds to work you need to add the path for soundevent file here.
-    VolumeSettings = [100, 80, 60, 40, 20, 0]
+1. Download the latest release from [Releases](../../releases)
+2. Extract to your CS2 server directory (`addons/counterstrikesharp/plugins/zMVP-Anthem/`)
+3. Configure `config.json` in `addons/counterstrikesharp/configs/plugins/zMVP-Anthem/`
+4. Restart server or run `css_plugins load zMVP-Anthem`
 
-    [Commands]
-    MVPCommands = ["mvp", "music"]        # Opens the MVP Menu
-    VolumeCommands = ["mvpvol", "vol"]    # Opens the Volume Menu (this is just a separate command)
+## Commands
 
-    [Timer]
-    CenterHtmlDuration = 10.0
-    CenterDuration = 10.0
-    AlertDuration = 10.0
+| Command  | Description                 |
+| -------- | --------------------------- |
+| `!mvp`   | Open the MVP selection menu |
+| `!music` | Alias for `!mvp`            |
 
-    [MVPSettings."PUBLIC MVP"."mvp.1"] # 'PUBLIC MVP' is the category which will be shown in the menu. 'mvp.1' is the key which u set the message to in lang folder.
-    MVPName = "Flawless"                 # This will be shown in the menu.
-    MVPSound = "MVP_Flawless"            # This is the soundevent name. With this the sound will play.
-    EnablePreview = true
-    ShowChatMessage = true
-    ShowCenterMessage = false
-    ShowAlertMessage = false
-    ShowHtmlMessage = true
-    SteamID = ""
-    Flags = []
+## Configuration
 
-    [MVPSettings."PUBLIC MVP"."mvp.2"]
-    MVPName = "Protection Charm"
-    MVPSound = "MVP_ProtectionCharm"
-    EnablePreview = true
-    ShowChatMessage = true
-    ShowCenterMessage = false
-    ShowAlertMessage = false
-    ShowHtmlMessage = true
-    SteamID = ""
-    Flags = []
-    
-
+```json
+{
+  "Settings": {
+    "DisablePlayerDefaultMVP": true
+  },
+  "Database": {
+    "Host": "localhost",
+    "Port": 3306,
+    "Database": "cs2_mvp",
+    "User": "root",
+    "Password": "",
+    "SslMode": "None"
+  },
+  "MVPSettings": {
+    "PUBLIC MVP": {
+      "CategoryFlags": [],
+      "MVPs": {
+        "mvp.1": {
+          "MVPName": "Flawless",
+          "MVPSound": "MVP.001_bamia",
+          "EnablePreview": true,
+          "Flags": []
+        }
+      }
+    }
+  }
+}
 ```
 
-# Commands
-```
-!mvp (opens the mvp menu)
-!mvpvol (opens a separate volume menu) (though you have the mvp volume in the main mvp menu too.)
-```
+## Authors
 
-If you wanna ask about the plugin or support me contact me here:
+- **T3Marius** - Original author
+- **zhw1nq** - Refactoring & optimization
 
-Discord: mariust3
+## License
 
-Donations:
-- **[** [**Revolut**](revolut.me/dumitrqxrj) **]**
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.

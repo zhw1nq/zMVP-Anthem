@@ -1,0 +1,21 @@
+{
+    "files.exclude": {
+        "**/bin": true,
+        "**/obj": true,
+        "**/.vs": true,
+        "**/.git": true,
+        "**/*.user": true,
+        "**/*.suo": true,
+        "**/3rd_party": true,
+        "**/.gitattributes": true,
+        "**/Thumbs.db": true,
+        "**/Desktop.ini": true
+    },
+    "search.exclude": {
+        "**/bin": true,
+        "**/obj": true,
+        "**/3rd_party": true
+    },
+    "editor.formatOnSave": true,
+    "dotnet.defaultSolution": "zMVP-Anthem.sln"
+}

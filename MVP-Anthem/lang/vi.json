@@ -1,0 +1,23 @@
+{
+    "prefix": "{darkblue}[MVP Anthem]:{default} ",
+    "mvp<mainmenu>": "MVP Anthem",
+    "mvp<equip>": "Trang bị [ {0} ] ?",
+    "mvp<remove>": "Gỡ MVP",
+    "mvp<remove.confirm>": "Bạn có chắc chắn muốn gỡ MVP không?",
+    "remove<yes>": "Có",
+    "remove<no>": "Không",
+    "preview<option>": "Không, nghe thử trước",
+    "mvp<option>": "Chọn MVP",
+    "categories<menu>": "Chọn Danh Mục",
+    "equip<yes>": "Có",
+    "mvp<currentmvp>": "MVP hiện tại: {0}",
+    "mvp<currentvolume>": "Âm lượng hiện tại: {0}",
+    "mvp.equipped": "Bạn đã trang bị thành công {red}{0}{default} MVP!",
+    "mvp.previewed": "Đang phát {red}{0}{default} cho bạn",
+    "mvp.removed": "MVP của bạn đã được gỡ.",
+    "preview.no.volume": "Âm lượng của bạn đang ở mức 0. Bạn không thể nghe thử MVP!",
+    "mvp.1.chat": "{red}{0}{default} là MVP của hiệp! Đang phát: {blue}{1}{default}.",
+    "mvp.1.html": "<font color='red'>{0}</font> LÀ MVP CỦA HIỆP!<br><b color='white'>━━━━━━━━━━━━━━━━━━━━━━━━<</b><br><img src='https://raw.githubusercontent.com/T3Marius/GIFS-Repository/refs/heads/main/Flawless_4k.gif'></img>",
+    "mvp.2.chat": "{red}{0}{default} là MVP của hiệp! Đang phát: {blue}{1}{default}.",
+    "mvp.2.html": "<font color='red'>{0}</font> LÀ MVP CỦA HIỆP!<br><b color='white'>━━━━━━━━━━━━━━━━━━━━━━━━<</b>Đang phát: <font color='blue'>{1}</font>"
+}

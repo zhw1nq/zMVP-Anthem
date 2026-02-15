@@ -1,45 +1,55 @@
 ﻿using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Capabilities;
-using T3MenuSharedApi;
+using MVPAnthem.Database;
+using Menu;
+using Microsoft.Extensions.Logging;
 
 namespace MVPAnthem;
 
 public partial class MVPAnthem : BasePlugin
 {
-    public override string ModuleAuthor => "T3Marius";
-    public override string ModuleName => "MVP-Anthem";
-    public override string ModuleVersion => "1.0.5";
-    public PluginConfig Config { get; set; } = new PluginConfig();
-    public static MVPAnthem Instance { get; set; } = new MVPAnthem();
-    public IT3MenuManager? MenuManager;
-    public IT3MenuManager? GetMenuManager()
-    {
-        if (MenuManager == null)
-            MenuManager = new PluginCapability<IT3MenuManager>("t3menu:manager").Get();
+    public override string ModuleAuthor => "T3Marius & zhw1nq";
+    public override string ModuleName => "zMVP-Anthem";
+    public override string ModuleVersion => "3.0.0";
 
-        return MenuManager;
-    }
+    public static MVPAnthem Instance { get; set; } = new();
+    public PluginConfig Config { get; set; } = new();
+    public KitsuneMenu? Menu { get; set; }
+    public IDatabaseProvider? DatabaseProvider { get; set; }
+    public PlayerCache PlayerCache { get; set; } = null!;
+
     public override void Load(bool hotReload)
     {
         Instance = this;
+        Menu = new KitsuneMenu(this);
+        Config = ConfigLoader.Load();
 
+        InitializeDatabase();
         Events.Initialize();
         Commands.Initialize();
-        Config = ConfigLoader.Load();
     }
-    public override void OnAllPluginsLoaded(bool hotReload)
-    {
-        LoadClientPrefs();
 
-        if (hotReload)
+    public override void Unload(bool hotReload) => Events.Dispose();
+
+    private void InitializeDatabase()
+    {
+        var db = Config.Database;
+        var connStr = $"Server={db.Host};Port={db.Port};Database={db.Database};" +
+                      $"User={db.User};Password={db.Password};SslMode={db.SslMode};";
+
+        DatabaseProvider = new MySqlDatabaseProvider(connStr, Logger);
+        PlayerCache = new PlayerCache(DatabaseProvider);
+
+        Task.Run(async () =>
         {
-            ReloadClientprefs();
-        }
+            if (await DatabaseProvider.TestConnectionAsync())
+            {
+                Logger.LogInformation("[MVP-Anthem] Database connection successful");
+                await DatabaseProvider.InitializeAsync();
+            }
+            else
+            {
+                Logger.LogError("[MVP-Anthem] Failed to connect to database!");
+            }
+        });
     }
-    public override void Unload(bool hotReload)
-    {
-        UnloadClientprefis();
-        Events.Dispose();
-    }
-
 }
