@@ -1,0 +1,129 @@
+{
+    "Version": "1.0.1",
+    "MVPSettings": {
+        "VIP MVP": {
+            "CategoryFlags": [
+                "@css/vip"
+            ],
+            "MVPs": {
+                "mvp.1": {
+                    "MVPName": "Renai Circulation",
+                    "MVPSound": "MVP.001_renai",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.2": {
+                    "MVPName": "Nobita",
+                    "MVPSound": "MVP.001_nanidoraemon",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.3": {
+                    "MVPName": "Mixue",
+                    "MVPSound": "MVP.001_mixue",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.4": {
+                    "MVPName": "Mixue Remix",
+                    "MVPSound": "MVP.001_mixi",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                }
+            }
+        },
+        "ADMIN MVP": {
+            "CategoryFlags": [
+                "@css/tgs-staff"
+            ],
+            "MVPs": {
+                "mvp.dev.1": {
+                    "MVPName": "Fashion",
+                    "MVPSound": "MVP.001_bamia",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.dev.2": {
+                    "MVPName": "Em Ngày Chẳng Phải Thuý Kiều",
+                    "MVPSound": "MVP.001_emdaychangpghaithuykieu",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.dev.3": {
+                    "MVPName": "Jaian Lòi Rốn",
+                    "MVPSound": "MVP.001_jaianloiron",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.dev.4": {
+                    "MVPName": "Mexico",
+                    "MVPSound": "MVP.001_mexico",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.dev.5": {
+                    "MVPName": "Oggy",
+                    "MVPSound": "MVP.001_oggy",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.dev.6": {
+                    "MVPName": "Cái địt mẹ?",
+                    "MVPSound": "MVP.001_tatnhatlang",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": true,
+                    "ShowAlertMessage": true,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                }
+            }
+        }
+    }
+}

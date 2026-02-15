@@ -7,10 +7,16 @@ namespace MVPAnthem;
 
 public class PluginConfig
 {
+    public string Version { get; set; } = "1.0.0";
     public Settings_Config Settings { get; set; } = new();
     public Database_Config Database { get; set; } = new();
     public Commands_Config Commands { get; set; } = new();
     public Timer_Config Timer { get; set; } = new();
+}
+
+public class MVPSettingsConfig
+{
+    public string Version { get; set; } = "1.0.0";
     public Dictionary<string, CategorySettings> MVPSettings { get; set; } = new();
 }
 
@@ -126,6 +132,7 @@ public static class ConfigLoader
 
         var defaultConfig = new PluginConfig
         {
+            Version = "1.0.0",
             Settings = new Settings_Config
             {
                 DisablePlayerDefaultMVP = true
@@ -148,7 +155,183 @@ public static class ConfigLoader
                 CenterHtmlDuration = 7,
                 CenterDuration = 7,
                 AlertDuration = 7
-            },
+            }
+        };
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.Never
+        };
+
+        string json = JsonSerializer.Serialize(defaultConfig, options);
+        File.WriteAllText(ConfigPath, json);
+    }
+}
+
+public static class MVPSettingsLoader
+{
+    private const string CDN_URL = "https://cdn.vhming.com/json/fetch/mvp.json";
+    private static readonly string MVPSettingsPath;
+    private static readonly HttpClient HttpClient = new();
+
+    static MVPSettingsLoader()
+    {
+        string assemblyName = Assembly.GetExecutingAssembly().GetName().Name ?? string.Empty;
+
+        MVPSettingsPath = Path.Combine(
+            Server.GameDirectory,
+            "csgo",
+            "addons",
+            "counterstrikesharp",
+            "configs",
+            "plugins",
+            assemblyName,
+            "mvp-settings.json"
+        );
+
+        HttpClient.Timeout = TimeSpan.FromSeconds(10);
+    }
+
+    public static async Task<MVPSettingsConfig> LoadOrFetchAsync()
+    {
+        MVPSettingsConfig? localConfig = null;
+        bool hasLocalFile = File.Exists(MVPSettingsPath);
+
+        // Load local file if exists
+        if (hasLocalFile)
+        {
+            localConfig = LoadFromFile();
+        }
+
+        // Try to fetch from CDN
+        try
+        {
+            Console.WriteLine("[MVP-Anthem] Checking for MVP settings updates from CDN...");
+            var cdnConfig = await FetchFromCDNAsync();
+
+            if (cdnConfig != null)
+            {
+                // Compare versions
+                if (localConfig == null || CompareVersions(cdnConfig.Version, localConfig.Version) > 0)
+                {
+                    Console.WriteLine($"[MVP-Anthem] New version available: {cdnConfig.Version} (current: {localConfig?.Version ?? "none"})");
+                    Console.WriteLine("[MVP-Anthem] Downloading and saving new MVP settings...");
+
+                    SaveToFile(cdnConfig);
+                    return cdnConfig;
+                }
+                else
+                {
+                    Console.WriteLine($"[MVP-Anthem] MVP settings are up to date (version: {localConfig.Version})");
+                    return localConfig;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MVP-Anthem] Failed to fetch from CDN: {ex.Message}");
+        }
+
+        // Fallback to local file or create default
+        if (localConfig != null)
+        {
+            Console.WriteLine("[MVP-Anthem] Using local MVP settings file");
+            return localConfig;
+        }
+
+        Console.WriteLine("[MVP-Anthem] Creating default MVP settings file");
+        var defaultConfig = CreateDefaultMVPSettings();
+        SaveToFile(defaultConfig);
+        return defaultConfig;
+    }
+
+    private static async Task<MVPSettingsConfig?> FetchFromCDNAsync()
+    {
+        try
+        {
+            var response = await HttpClient.GetAsync(CDN_URL);
+            response.EnsureSuccessStatusCode();
+
+            string jsonContent = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true
+            };
+
+            return JsonSerializer.Deserialize<MVPSettingsConfig>(jsonContent, options);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static MVPSettingsConfig? LoadFromFile()
+    {
+        try
+        {
+            string configText = File.ReadAllText(MVPSettingsPath);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true
+            };
+
+            return JsonSerializer.Deserialize<MVPSettingsConfig>(configText, options);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MVP-Anthem] Error loading MVP settings file: {ex.Message}");
+            return null;
+        }
+    }
+
+    private static void SaveToFile(MVPSettingsConfig config)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(MVPSettingsPath)!);
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.Never
+            };
+
+            string json = JsonSerializer.Serialize(config, options);
+            File.WriteAllText(MVPSettingsPath, json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MVP-Anthem] Error saving MVP settings file: {ex.Message}");
+        }
+    }
+
+    private static int CompareVersions(string version1, string version2)
+    {
+        try
+        {
+            var v1 = new Version(version1);
+            var v2 = new Version(version2);
+            return v1.CompareTo(v2);
+        }
+        catch
+        {
+            return string.Compare(version1, version2, StringComparison.Ordinal);
+        }
+    }
+
+    private static MVPSettingsConfig CreateDefaultMVPSettings()
+    {
+        return new MVPSettingsConfig
+        {
+            Version = "1.0.0",
             MVPSettings = new Dictionary<string, CategorySettings>
             {
                 {
@@ -170,20 +353,48 @@ public static class ConfigLoader
                                     SteamID = "",
                                     Flags = new List<string>()
                                 }
+                            },
+                            {
+                                "mvp.2", new MVP_Settings
+                                {
+                                    MVPName = "Ace",
+                                    MVPSound = "MVP.002_ace",
+                                    EnablePreview = true,
+                                    ShowChatMessage = true,
+                                    ShowCenterMessage = false,
+                                    ShowAlertMessage = false,
+                                    ShowHtmlMessage = true,
+                                    SteamID = "",
+                                    Flags = new List<string>()
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "VIP MVP", new CategorySettings
+                    {
+                        CategoryFlags = new List<string> { "@css/vip" },
+                        MVPs = new Dictionary<string, MVP_Settings>
+                        {
+                            {
+                                "mvp.vip.1", new MVP_Settings
+                                {
+                                    MVPName = "VIP Exclusive",
+                                    MVPSound = "MVP.vip_001",
+                                    EnablePreview = true,
+                                    ShowChatMessage = true,
+                                    ShowCenterMessage = false,
+                                    ShowAlertMessage = false,
+                                    ShowHtmlMessage = true,
+                                    SteamID = "",
+                                    Flags = new List<string>()
+                                }
                             }
                         }
                     }
                 }
             }
         };
-
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.Never
-        };
-
-        string json = JsonSerializer.Serialize(defaultConfig, options);
-        File.WriteAllText(ConfigPath, json);
     }
 }

@@ -1,0 +1,50 @@
+{
+    "Version": "1.0.0",
+    "MVPSettings": {
+        "PUBLIC MVP": {
+            "CategoryFlags": [],
+            "MVPs": {
+                "mvp.1": {
+                    "MVPName": "Flawless",
+                    "MVPSound": "MVP.001_bamia",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": false,
+                    "ShowAlertMessage": false,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                },
+                "mvp.2": {
+                    "MVPName": "Ace",
+                    "MVPSound": "MVP.002_ace",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": false,
+                    "ShowAlertMessage": false,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                }
+            }
+        },
+        "VIP MVP": {
+            "CategoryFlags": [
+                "@css/vip"
+            ],
+            "MVPs": {
+                "mvp.vip.1": {
+                    "MVPName": "VIP Exclusive",
+                    "MVPSound": "MVP.vip_001",
+                    "EnablePreview": true,
+                    "ShowChatMessage": true,
+                    "ShowCenterMessage": false,
+                    "ShowAlertMessage": false,
+                    "ShowHtmlMessage": true,
+                    "SteamID": "",
+                    "Flags": []
+                }
+            }
+        }
+    }
+}

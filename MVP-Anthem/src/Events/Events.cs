@@ -11,6 +11,22 @@ namespace MVPAnthem;
 public static class Events
 {
     private static Timer? _centerHtmlTimer, _centerTimer, _alertTimer;
+
+    // Helper method to get localized message with fallback to mvp.default
+    private static string GetLocalizedMessage(string mvpKey, string messageType)
+    {
+        var localizer = Instance.Localizer;
+        var specificKey = $"{mvpKey}.{messageType}";
+        var defaultKey = $"mvp.default.{messageType}";
+
+        // Try specific key first (e.g., "mvp.1.chat")
+        var msg = localizer[specificKey];
+        if (!string.IsNullOrEmpty(msg))
+            return msg;
+
+        // Fallback to default (e.g., "mvp.default.chat")
+        return localizer[defaultKey];
+    }
     private static bool _isCenterHtmlActive, _isCenterActive, _isAlertActive;
     private static string _htmlMessage = "", _centerMessage = "", _alertMessage = "";
 
@@ -75,7 +91,7 @@ public static class Events
         MVP_Settings? mvpSettings = null;
         string? mvpKey = null;
 
-        foreach (var cat in Instance.Config.MVPSettings)
+        foreach (var cat in Instance.MVPSettings.MVPSettings)
         {
             foreach (var entry in cat.Value.MVPs)
             {
@@ -107,7 +123,7 @@ public static class Events
             // Chat message
             if (mvpSettings.ShowChatMessage)
             {
-                var msg = localizer[$"{mvpKey}.chat"];
+                var msg = GetLocalizedMessage(mvpKey, "chat");
                 if (!string.IsNullOrEmpty(msg))
                     p.PrintToChat(localizer["prefix"] + string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName));
             }
@@ -115,7 +131,7 @@ public static class Events
             // Center message
             if (mvpSettings.ShowCenterMessage)
             {
-                var msg = localizer[$"{mvpKey}.center"];
+                var msg = GetLocalizedMessage(mvpKey, "center");
                 if (!string.IsNullOrEmpty(msg))
                 {
                     _centerMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
@@ -128,7 +144,7 @@ public static class Events
             // Alert message
             if (mvpSettings.ShowAlertMessage)
             {
-                var msg = localizer[$"{mvpKey}.alert"];
+                var msg = GetLocalizedMessage(mvpKey, "alert");
                 if (!string.IsNullOrEmpty(msg))
                 {
                     _alertMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
@@ -141,7 +157,7 @@ public static class Events
             // HTML message
             if (mvpSettings.ShowHtmlMessage)
             {
-                var msg = localizer[$"{mvpKey}.html"];
+                var msg = GetLocalizedMessage(mvpKey, "html");
                 if (!string.IsNullOrEmpty(msg))
                 {
                     _htmlMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);

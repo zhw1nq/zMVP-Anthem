@@ -58,10 +58,9 @@ public static class KitsuneMenuManager
 
     private static void ShowCategoryMenu(CCSPlayerController player)
     {
-        var config = Instance.Config;
         var accessible = new List<(string name, CategorySettings settings)>();
 
-        foreach (var cat in config.MVPSettings)
+        foreach (var cat in Instance.MVPSettings.MVPSettings)
         {
             if (!HasCategoryAccess(player, cat.Value.CategoryFlags)) continue;
             if (cat.Value.MVPs.Any(m => ValidatePlayerForMVP(player, m.Value)))
