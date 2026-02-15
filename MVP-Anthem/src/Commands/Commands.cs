@@ -43,10 +43,6 @@ public static class Commands
             {
                 var newSettings = await MVPSettingsLoader.LoadOrFetchAsync();
                 Instance.MVPSettings = newSettings;
-
-                // Precache new sounds
-                Server.NextFrame(() => Instance.PrecacheMVPSounds());
-
                 player.PrintToChat($"{Instance.Localizer["prefix"]}MVP settings updated successfully! Version: {newSettings.Version}");
                 Instance.Logger.LogInformation($"[MVP-Anthem] Admin {player.PlayerName} forced MVP settings fetch");
             }

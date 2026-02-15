@@ -29,39 +29,11 @@ public partial class MVPAnthem : BasePlugin
         {
             MVPSettings = await MVPSettingsLoader.LoadOrFetchAsync();
             Logger.LogInformation("[MVP-Anthem] MVP settings loaded successfully");
-
-            // Precache all MVP sounds
-            Server.NextFrame(() => PrecacheMVPSounds());
         });
 
         InitializeDatabase();
         Events.Initialize();
         Commands.Initialize();
-    }
-
-    private void PrecacheMVPSounds()
-    {
-        var uniqueSounds = new HashSet<string>();
-
-        // Collect all unique sounds from MVP settings
-        foreach (var category in MVPSettings.MVPSettings.Values)
-        {
-            foreach (var mvp in category.MVPs.Values)
-            {
-                if (!string.IsNullOrEmpty(mvp.MVPSound))
-                {
-                    uniqueSounds.Add(mvp.MVPSound);
-                }
-            }
-        }
-
-        // Precache each sound
-        foreach (var sound in uniqueSounds)
-        {
-            Server.PrecacheSound(sound);
-        }
-
-        Logger.LogInformation($"[MVP-Anthem] Precached {uniqueSounds.Count} MVP sounds");
     }
 
     public override void Unload(bool hotReload) => Events.Dispose();
