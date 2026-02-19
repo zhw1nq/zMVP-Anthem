@@ -32,7 +32,7 @@ public static class KitsuneMenuManager
             ? $"{localizer["mvp<mainmenu>"]} - {currentMvpName}"
             : localizer["mvp<mainmenu>"];
 
-        ShowMenu(player, title, items, optionMap);
+        ShowMenu(player, title, items, optionMap, isSubMenu: false);
     }
 
     private static void ShowRemoveConfirmation(CCSPlayerController player)
@@ -89,7 +89,7 @@ public static class KitsuneMenuManager
             optionMap[i] = () => ShowMVPList(player, name, settings);
         }
 
-        ShowMenu(player, Instance.Localizer["categories<menu>"], items, optionMap);
+        ShowMenu(player, Instance.Localizer["categories<menu>"], items, optionMap, isSubMenu: true);
     }
 
     private static void ShowMVPList(CCSPlayerController player, string categoryName, CategorySettings category)
@@ -112,7 +112,7 @@ public static class KitsuneMenuManager
             return;
         }
 
-        ShowMenu(player, categoryName, items, optionMap);
+        ShowMenu(player, categoryName, items, optionMap, isSubMenu: true);
     }
 
     private static void ShowMVPActions(CCSPlayerController player, MVP_Settings mvp)
@@ -139,12 +139,12 @@ public static class KitsuneMenuManager
             };
         }
 
-        ShowMenu(player, localizer["mvp<equip>", mvp.MVPName], items, optionMap);
+        ShowMenu(player, localizer["mvp<equip>", mvp.MVPName], items, optionMap, isSubMenu: true);
     }
 
     // ─── Shared menu helper ──────────────────────────────────────────
     private static void ShowMenu(CCSPlayerController player, string title,
-        List<MenuItem> items, Dictionary<int, Action> optionMap)
+        List<MenuItem> items, Dictionary<int, Action> optionMap, bool isSubMenu = false)
     {
         Instance.Menu?.ShowScrollableMenu(player, title, items,
             (buttons, menu, selected) =>
@@ -152,7 +152,7 @@ public static class KitsuneMenuManager
                 if (selected == null) return;
                 if (buttons == MenuButtons.Select && optionMap.TryGetValue(menu.Option, out var action))
                     action.Invoke();
-            }, false, freezePlayer: false, disableDeveloper: true);
+            }, isSubMenu, freezePlayer: false, disableDeveloper: true);
     }
 
     // ─── Permission helpers ──────────────────────────────────────────

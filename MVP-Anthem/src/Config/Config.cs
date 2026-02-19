@@ -7,7 +7,7 @@ namespace MVPAnthem;
 
 public class PluginConfig
 {
-    public string Version { get; set; } = "3.0.1";
+    public string Version { get; set; } = "3.1.0";
     public Settings_Config Settings { get; set; } = new();
     public Database_Config Database { get; set; } = new();
     public Commands_Config Commands { get; set; } = new();
@@ -67,6 +67,22 @@ public class Commands_Config
     public List<string> MVPCommands { get; set; } = new() { "mvp", "music" };
 }
 
+internal static class JsonOptions
+{
+    public static readonly JsonSerializerOptions Read = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true
+    };
+
+    public static readonly JsonSerializerOptions Write = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never
+    };
+}
+
 public static class ConfigLoader
 {
     private static readonly string ConfigPath;
@@ -102,16 +118,7 @@ public static class ConfigLoader
         try
         {
             string configText = File.ReadAllText(ConfigPath);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true,
-                WriteIndented = true
-            };
-
-            var config = JsonSerializer.Deserialize<PluginConfig>(configText, options);
+            var config = JsonSerializer.Deserialize<PluginConfig>(configText, JsonOptions.Read);
             return config ?? new PluginConfig();
         }
         catch (Exception ex)
@@ -127,7 +134,7 @@ public static class ConfigLoader
 
         var defaultConfig = new PluginConfig
         {
-            Version = "3.0.1",
+            Version = "3.1.0",
             Settings = new Settings_Config
             {
                 DisablePlayerDefaultMVP = true,
@@ -152,13 +159,7 @@ public static class ConfigLoader
             }
         };
 
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.Never
-        };
-
-        string json = JsonSerializer.Serialize(defaultConfig, options);
+        string json = JsonSerializer.Serialize(defaultConfig, JsonOptions.Write);
         File.WriteAllText(ConfigPath, json);
     }
 }
@@ -251,14 +252,7 @@ public static class MVPSettingsLoader
 
             string jsonContent = await response.Content.ReadAsStringAsync();
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true
-            };
-
-            return JsonSerializer.Deserialize<MVPSettingsConfig>(jsonContent, options);
+            return JsonSerializer.Deserialize<MVPSettingsConfig>(jsonContent, JsonOptions.Read);
         }
         catch
         {
@@ -271,15 +265,7 @@ public static class MVPSettingsLoader
         try
         {
             string configText = File.ReadAllText(MVPSettingsPath);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true
-            };
-
-            return JsonSerializer.Deserialize<MVPSettingsConfig>(configText, options);
+            return JsonSerializer.Deserialize<MVPSettingsConfig>(configText, JsonOptions.Read);
         }
         catch (Exception ex)
         {
@@ -293,14 +279,7 @@ public static class MVPSettingsLoader
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(MVPSettingsPath)!);
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.Never
-            };
-
-            string json = JsonSerializer.Serialize(config, options);
+            string json = JsonSerializer.Serialize(config, JsonOptions.Write);
             File.WriteAllText(MVPSettingsPath, json);
         }
         catch (Exception ex)

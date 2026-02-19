@@ -72,8 +72,14 @@ public class PlayerCache(IDatabaseProvider database)
     public async Task FlushPlayerAsync(CCSPlayerController player)
     {
         if (player == null || player.SteamID == 0) return;
+        await FlushPlayerAsync(player.SteamID);
+    }
 
-        if (_dirty.TryRemove(player.SteamID, out _) && _cache.TryGetValue(player.SteamID, out var data))
+    public async Task FlushPlayerAsync(ulong steamId)
+    {
+        if (steamId == 0) return;
+
+        if (_dirty.TryRemove(steamId, out _) && _cache.TryGetValue(steamId, out var data))
             await database.SavePlayerPreferenceAsync(data.SteamId, data.MVPName, data.MVPSound);
     }
 
@@ -90,8 +96,14 @@ public class PlayerCache(IDatabaseProvider database)
     public void RemovePlayer(CCSPlayerController player)
     {
         if (player == null || player.SteamID == 0) return;
-        _cache.TryRemove(player.SteamID, out _);
-        _dirty.TryRemove(player.SteamID, out _);
+        RemovePlayer(player.SteamID);
+    }
+
+    public void RemovePlayer(ulong steamId)
+    {
+        if (steamId == 0) return;
+        _cache.TryRemove(steamId, out _);
+        _dirty.TryRemove(steamId, out _);
     }
 
     public void ClearAll()

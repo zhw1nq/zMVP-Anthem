@@ -10,7 +10,6 @@
     "mvp<option>": "Select MVP",
     "categories<menu>": "Select A Category",
     "equip<yes>": "Equip",
-    "mvp<currentmvp>": "Current MVP: {0}",
     "mvp.equipped": "You successfully equipped {red}{0}{default} MVP!",
     "mvp.previewed": "Playing {red}{0}{default} for you",
     "mvp.removed": "Your active MVP has been removed.",

@@ -1,4 +1,5 @@
-﻿using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
+using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
+using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API;
@@ -42,11 +43,37 @@ public static class Events
         Instance.RegisterEventHandler<EventRoundMvp>(OnRoundMvp);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.RegisterEventHandler<EventCsWinPanelMatch>(OnMapEnd);
+        Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
     }
 
     public static void Dispose()
     {
         _centerHtmlTimer?.Kill();
+        _tickTimer?.Kill();
+    }
+
+    private static string? _lastMvpSound;
+    private static Timer? _tickTimer;
+
+    private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        // Stop any lingering MVP sounds from previous round
+        if (!string.IsNullOrEmpty(_lastMvpSound))
+        {
+            foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
+                p.ExecuteClientCommand("stopsound");
+
+            _lastMvpSound = null;
+        }
+
+        // Stop HTML messages
+        _isCenterHtmlActive = false;
+        _centerHtmlTimer?.Kill();
+        _centerHtmlTimer = null;
+        _tickTimer?.Kill();
+        _tickTimer = null;
+
+        return HookResult.Continue;
     }
 
     private static HookResult OnPlayerConnect(EventPlayerConnectFull @event, GameEventInfo info)
@@ -70,8 +97,13 @@ public static class Events
         var player = @event.Userid;
         if (player == null || !player.IsValid) return HookResult.Continue;
 
-        _ = Task.Run(async () => await Instance.PlayerCache.FlushPlayerAsync(player));
-        Server.NextFrame(() => Instance.PlayerCache.RemovePlayer(player));
+        // Capture SteamID before async — player entity may become invalid
+        ulong steamId = player.SteamID;
+        _ = Task.Run(async () =>
+        {
+            await Instance.PlayerCache.FlushPlayerAsync(steamId);
+            Server.NextFrame(() => Instance.PlayerCache.RemovePlayer(steamId));
+        });
 
         return HookResult.Continue;
     }
@@ -112,14 +144,15 @@ public static class Events
         var localizer = Instance.Localizer;
         var timer = Instance.Config.Timer;
 
+        // Track last MVP sound for cleanup on round start
+        _lastMvpSound = mvpSound;
+
         foreach (var p in Utilities.GetPlayers().Where(p => !p.IsBot && !p.IsHLTV))
         {
-            // Play sound
-            Server.NextFrame(() =>
-            {
-                if (p.IsValid && p.PawnIsAlive)
-                    p.EmitSound(mvpSound, p, 1.0f);
-            });
+            // Play sound immediately — event handler is on main thread, no NextFrame needed
+            // NextFrame causes timing issue: by next frame, engine blocks sound for non-MVP players
+            if (p.IsValid)
+                p.EmitSound(mvpSound, p, 1.0f);
 
             // Chat message
             if (mvpSettings.ShowChatMessage)
@@ -144,25 +177,18 @@ public static class Events
         }
 
         if (_isCenterHtmlActive)
-            TickMessages();
+        {
+            _tickTimer?.Kill();
+            _tickTimer = Instance.AddTimer(0.1f, () =>
+            {
+                if (!_isCenterHtmlActive) { _tickTimer?.Kill(); _tickTimer = null; return; }
+
+                foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
+                    p.PrintToCenterHtml($"{_htmlMessage}</div>");
+            }, TimerFlags.REPEAT);
+        }
 
         return HookResult.Continue;
-    }
-
-    private static void TickMessages()
-    {
-        Server.NextFrame(() =>
-        {
-            if (!_isCenterHtmlActive) return;
-
-            foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
-            {
-                p.PrintToCenterHtml($"{_htmlMessage}</div>");
-            }
-
-            if (_isCenterHtmlActive)
-                TickMessages();
-        });
     }
 
     private static HookResult OnMapEnd(EventCsWinPanelMatch @event, GameEventInfo info)
@@ -175,7 +201,8 @@ public static class Events
                 Instance.Logger.LogInformation($"[MVP-Anthem] Flushing {dirty} preferences to database...");
                 await Instance.PlayerCache.FlushAllAsync();
             }
-            Instance.PlayerCache.ClearAll();
+            // ClearAll after flush completes — prevents race condition
+            Server.NextFrame(() => Instance.PlayerCache.ClearAll());
         });
 
         return HookResult.Continue;
