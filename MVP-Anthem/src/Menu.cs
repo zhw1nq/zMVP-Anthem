@@ -6,9 +6,9 @@ using static MVPAnthem.MVPAnthem;
 
 namespace MVPAnthem;
 
-public static class KitsuneMenuManager
+public static class MVPMenu
 {
-    public static void DisplayMVP(CCSPlayerController player)
+    public static void Display(CCSPlayerController player)
     {
         if (player == null || !player.IsValid) return;
 
@@ -21,7 +21,7 @@ public static class KitsuneMenuManager
 
         if (!string.IsNullOrEmpty(currentMvpName))
         {
-            items.Add(new MenuItem(MenuItemType.Button, [new MenuValue($"❌ {localizer["mvp<remove>"]}")]));
+            items.Add(new MenuItem(MenuItemType.Button, [new MenuValue(localizer["mvp<remove>"])]));
             optionMap[i++] = () => ShowRemoveConfirmation(player);
         }
 
@@ -40,8 +40,8 @@ public static class KitsuneMenuManager
         var localizer = Instance.Localizer;
         List<MenuItem> items =
         [
-            new MenuItem(MenuItemType.Button, [new MenuValue($"✅ {localizer["remove<yes>"]}")]),
-            new MenuItem(MenuItemType.Button, [new MenuValue($"❌ {localizer["remove<no>"]}")])
+            new MenuItem(MenuItemType.Button, [new MenuValue(localizer["remove<yes>"])]),
+            new MenuItem(MenuItemType.Button, [new MenuValue(localizer["remove<no>"])])
         ];
 
         Instance.Menu?.ShowScrollableMenu(player, localizer["mvp<remove.confirm>"], items,
@@ -69,11 +69,10 @@ public static class KitsuneMenuManager
 
         if (accessible.Count == 0)
         {
-            player.PrintToChat(Instance.Localizer["prefix"] + "No MVPs available");
+            player.PrintToChat(Instance.Localizer["prefix"] + Instance.Localizer["mvp<unavailable>"]);
             return;
         }
 
-        // Skip category menu if only one category
         if (accessible.Count == 1)
         {
             ShowMVPList(player, accessible[0].name, accessible[0].settings);
@@ -108,7 +107,7 @@ public static class KitsuneMenuManager
 
         if (i == 0)
         {
-            player.PrintToChat(Instance.Localizer["prefix"] + "No MVPs available");
+            player.PrintToChat(Instance.Localizer["prefix"] + Instance.Localizer["mvp<unavailable>"]);
             return;
         }
 
@@ -122,7 +121,7 @@ public static class KitsuneMenuManager
         var optionMap = new Dictionary<int, Action>();
         int i = 0;
 
-        items.Add(new MenuItem(MenuItemType.Button, [new MenuValue($"✅ {localizer["equip<yes>"]}")]));
+        items.Add(new MenuItem(MenuItemType.Button, [new MenuValue(localizer["equip<yes>"])]));
         optionMap[i++] = () =>
         {
             Instance.PlayerCache.SetMVP(player, mvp.MVPName, mvp.MVPSound);
@@ -131,10 +130,10 @@ public static class KitsuneMenuManager
 
         if (mvp.EnablePreview)
         {
-            items.Add(new MenuItem(MenuItemType.Button, [new MenuValue($"🔊 {localizer["preview<option>"]}")]));
+            items.Add(new MenuItem(MenuItemType.Button, [new MenuValue(localizer["preview<option>"])]));
             optionMap[i++] = () =>
             {
-                player.EmitSound(mvp.MVPSound, player, 1.0f);
+                Events.PlaySoundToPlayer(player, mvp);
                 player.PrintToChat(localizer["prefix"] + localizer["mvp.previewed", mvp.MVPName]);
             };
         }
@@ -142,7 +141,6 @@ public static class KitsuneMenuManager
         ShowMenu(player, localizer["mvp<equip>", mvp.MVPName], items, optionMap, isSubMenu: true);
     }
 
-    // ─── Shared menu helper ──────────────────────────────────────────
     private static void ShowMenu(CCSPlayerController player, string title,
         List<MenuItem> items, Dictionary<int, Action> optionMap, bool isSubMenu = false)
     {
@@ -155,7 +153,6 @@ public static class KitsuneMenuManager
             }, isSubMenu, freezePlayer: false, disableDeveloper: true);
     }
 
-    // ─── Permission helpers ──────────────────────────────────────────
     private static bool HasCategoryAccess(CCSPlayerController player, List<string> flags)
     {
         if (flags == null || flags.Count == 0) return true;
@@ -166,17 +163,14 @@ public static class KitsuneMenuManager
 
     private static bool ValidatePlayerForMVP(CCSPlayerController player, MVP_Settings settings)
     {
-        // Specific SteamID match
         if (!string.IsNullOrEmpty(settings.SteamID) && player.SteamID.ToString() == settings.SteamID)
             return true;
 
-        // Flag-based access
         if (settings.Flags.Count > 0)
             return settings.Flags.Any(f =>
                 (f.StartsWith("#") && AdminManager.PlayerInGroup(player, f)) ||
                 (f.StartsWith("@") && AdminManager.PlayerHasPermissions(player, f)));
 
-        // Public MVP (no SteamID, no flags)
         return string.IsNullOrEmpty(settings.SteamID);
     }
 }

@@ -13,6 +13,7 @@
     "mvp.equipped": "Bạn đã trang bị thành công {red}{0}{silver} MVP!",
     "mvp.previewed": "Đang phát {red}{0}{silver} cho bạn",
     "mvp.removed": "MVP của bạn đã được gỡ.",
+    "mvp<unavailable>": "Không có MVP nào khả dụng.",
     "mvp.default.chat": "{red}{0}{silver} CHƯA TÀY ĐÂU !! Đang phát: {blue}{1}{silver}.",
     "mvp.default.html": "<font color='red'>{0}</font> CHƯA TÀY ĐÂU !!<br><img src='https://cdn.vhming.com/mvp.jpg'></img>",
     "mvp.1.chat": "{red}{0}{silver} CHƯA TÀY ĐÂU !! Đang phát: {blue}{1}{silver}.",

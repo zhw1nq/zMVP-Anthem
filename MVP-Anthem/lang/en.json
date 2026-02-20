@@ -13,6 +13,7 @@
     "mvp.equipped": "You successfully equipped {red}{0}{default} MVP!",
     "mvp.previewed": "Playing {red}{0}{default} for you",
     "mvp.removed": "Your active MVP has been removed.",
+    "mvp<unavailable>": "No MVPs available.",
     "mvp.1.chat": "{red}{0}{default} is the MVP of the round! Playing: {blue}{1}{default}.",
     "mvp.1.html": "<font color='red'>{0}</font> IS the MVP of the round!<br><b color='white'>━━━━━━━━━━━━━━━━━━━━━━━━<</b><br><img src='https://raw.githubusercontent.com/T3Marius/GIFS-Repository/refs/heads/main/Flawless_4k.gif'></img>",
     "mvp.2.chat": "{red}{0}{default} is the MVP of the round! Playing: {blue}{1}{default}.",

@@ -1,7 +1,6 @@
 using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API;
 using Microsoft.Extensions.Logging;
 using static MVPAnthem.MVPAnthem;
@@ -13,34 +12,19 @@ public static class Events
     private static Timer? _centerHtmlTimer;
     private static bool _isCenterHtmlActive;
     private static string _htmlMessage = "";
+    private static string? _lastMvpSound;
+    private static Timer? _tickTimer;
 
-    // Helper method to get localized message with fallback to mvp.default
-    private static string? GetLocalizedMessage(string mvpKey, string messageType)
+    public static void PlaySoundToPlayer(CCSPlayerController player, MVP_Settings mvpSettings)
     {
-        var localizer = Instance.Localizer;
-
-        // Try specific key first (e.g., "mvp.1.chat")
-        var specificKey = $"{mvpKey}.{messageType}";
-        var msg = localizer[specificKey];
-
-        // CSSharp localizer returns the key itself when not found
-        if (!string.IsNullOrEmpty(msg) && msg != specificKey)
-            return msg;
-
-        // Fallback to default (e.g., "mvp.default.chat")
-        var defaultKey = $"mvp.default.{messageType}";
-        var defaultMsg = localizer[defaultKey];
-
-        if (!string.IsNullOrEmpty(defaultMsg) && defaultMsg != defaultKey)
-            return defaultMsg;
-
-        return null;
+        if (!player.IsValid) return;
+        player.EmitSound(mvpSettings.MVPSound, player, 1.0f);
     }
 
-    public static void Initialize()
+    public static void RegisterEvents()
     {
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnect);
-        Instance.RegisterEventHandler<EventRoundMvp>(OnRoundMvp);
+        Instance.RegisterEventHandler<EventRoundMvp>(OnRoundMvp, HookMode.Pre);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.RegisterEventHandler<EventCsWinPanelMatch>(OnMapEnd);
         Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
@@ -52,21 +36,26 @@ public static class Events
         _tickTimer?.Kill();
     }
 
-    private static string? _lastMvpSound;
-    private static Timer? _tickTimer;
+    private static string? GetLocalizedMessage(string mvpKey, string messageType)
+    {
+        var localizer = Instance.Localizer;
+
+        var specificKey = $"{mvpKey}.{messageType}";
+        var msg = localizer[specificKey];
+        if (!string.IsNullOrEmpty(msg) && msg != specificKey)
+            return msg;
+
+        var defaultKey = $"mvp.default.{messageType}";
+        var defaultMsg = localizer[defaultKey];
+        if (!string.IsNullOrEmpty(defaultMsg) && defaultMsg != defaultKey)
+            return defaultMsg;
+
+        return null;
+    }
 
     private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
-        // Stop any lingering MVP sounds from previous round
-        if (!string.IsNullOrEmpty(_lastMvpSound))
-        {
-            foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
-                p.ExecuteClientCommand("stopsound");
-
-            _lastMvpSound = null;
-        }
-
-        // Stop HTML messages
+        _lastMvpSound = null;
         _isCenterHtmlActive = false;
         _centerHtmlTimer?.Kill();
         _centerHtmlTimer = null;
@@ -97,7 +86,6 @@ public static class Events
         var player = @event.Userid;
         if (player == null || !player.IsValid) return HookResult.Continue;
 
-        // Capture SteamID before async — player entity may become invalid
         ulong steamId = player.SteamID;
         _ = Task.Run(async () =>
         {
@@ -120,7 +108,8 @@ public static class Events
         if (string.IsNullOrEmpty(mvpSound) || string.IsNullOrEmpty(mvpName))
             return HookResult.Continue;
 
-        // Find matching MVP settings
+        info.DontBroadcast = true;
+
         MVP_Settings? mvpSettings = null;
         string? mvpKey = null;
 
@@ -143,18 +132,13 @@ public static class Events
 
         var localizer = Instance.Localizer;
         var timer = Instance.Config.Timer;
-
-        // Track last MVP sound for cleanup on round start
         _lastMvpSound = mvpSound;
 
         foreach (var p in Utilities.GetPlayers().Where(p => !p.IsBot && !p.IsHLTV))
         {
-            // Play sound immediately — event handler is on main thread, no NextFrame needed
-            // NextFrame causes timing issue: by next frame, engine blocks sound for non-MVP players
             if (p.IsValid)
-                p.EmitSound(mvpSound, p, 1.0f);
+                PlaySoundToPlayer(p, mvpSettings);
 
-            // Chat message
             if (mvpSettings.ShowChatMessage)
             {
                 var msg = GetLocalizedMessage(mvpKey, "chat");
@@ -162,7 +146,6 @@ public static class Events
                     p.PrintToChat(localizer["prefix"] + string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName));
             }
 
-            // HTML message
             if (mvpSettings.ShowHtmlMessage)
             {
                 var msg = GetLocalizedMessage(mvpKey, "html");
@@ -201,7 +184,6 @@ public static class Events
                 Instance.Logger.LogInformation($"[MVP-Anthem] Flushing {dirty} preferences to database...");
                 await Instance.PlayerCache.FlushAllAsync();
             }
-            // ClearAll after flush completes — prevents race condition
             Server.NextFrame(() => Instance.PlayerCache.ClearAll());
         });
 

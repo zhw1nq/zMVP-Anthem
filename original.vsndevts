@@ -1,0 +1,35 @@
+    Music.MVPAnthem.3kliksphilip_01 = 
+    {
+        type = "csgo_music"
+        volume = 0.900000
+        volume_convar = "snd_mvp_volume"
+        priority = 5.000000
+        stop_music = "true"
+        volume_fade_out_input_max = 1.600000
+        loop_track = "true"
+        should_queue_track = "true"
+        skip_if_muted = "true"
+        block_won_lost = "true"
+        startpoint_01 = 0.000000
+        startpoint_02 = 0.000000
+        startpoint_03 = 0.000000
+        endpoint_01 = 0.000000
+        endpoint_02 = 0.000000
+        endpoint_03 = 0.000000
+        syncpoints_01 = 
+        [
+            0.000000,
+        ]
+        syncpoints_02 = 
+        [
+            0.000000,
+        ]
+        syncpoints_03 = 
+        [
+            0.000000,
+        ]
+        vsnd_files = 
+        [
+            "sounds/music/3kliksphilip_01/roundmvpanthem_01.vsnd",
+        ]
+    }

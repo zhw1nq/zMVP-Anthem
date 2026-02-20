@@ -1,7 +1,9 @@
-﻿using CounterStrikeSharp.API.Core;
-using MVPAnthem.Database;
-using Menu;
+﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Admin;
 using Microsoft.Extensions.Logging;
+using Menu;
 
 namespace MVPAnthem;
 
@@ -24,11 +26,8 @@ public partial class MVPAnthem : BasePlugin
         Menu = new KitsuneMenu(this);
         Config = ConfigLoader.Load();
 
-        // Force static constructor to run on the main thread
-        // (it calls Server.GameDirectory which is a native CS2 API)
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MVPSettingsLoader).TypeHandle);
 
-        // Load MVP settings from CDN or local file
         Task.Run(async () =>
         {
             MVPSettings = await MVPSettingsLoader.LoadOrFetchAsync();
@@ -36,8 +35,8 @@ public partial class MVPAnthem : BasePlugin
         });
 
         InitializeDatabase();
-        Events.Initialize();
-        Commands.Initialize();
+        Events.RegisterEvents();
+        RegisterCommands();
     }
 
     public override void Unload(bool hotReload) => Events.Dispose();
@@ -61,6 +60,72 @@ public partial class MVPAnthem : BasePlugin
             else
             {
                 Logger.LogError("[MVP-Anthem] Failed to connect to database!");
+            }
+        });
+    }
+
+    private void RegisterCommands()
+    {
+        foreach (var cmd in Config.Commands.MVPCommands)
+            AddCommand($"css_{cmd}", "Opens the MVP Menu", OnMVPCommand);
+
+        AddCommand("css_mvp_fetch", "Force fetch MVP settings from CDN", OnMVPFetchCommand);
+        AddCommand("css_mvp_reload", "Reload MVP settings from local file", OnMVPReloadCommand);
+    }
+
+    private void OnMVPCommand(CCSPlayerController? player, CommandInfo info)
+    {
+        if (player == null || !player.IsValid) return;
+        MVPMenu.Display(player);
+    }
+
+    private void OnMVPFetchCommand(CCSPlayerController? player, CommandInfo info)
+    {
+        ExecuteSettingsRefresh(player, "Fetching MVP settings from CDN...", "forced MVP settings fetch");
+    }
+
+    private void OnMVPReloadCommand(CCSPlayerController? player, CommandInfo info)
+    {
+        ExecuteSettingsRefresh(player, "Reloading MVP settings from local file...", "reloaded MVP settings");
+    }
+
+    private void ExecuteSettingsRefresh(CCSPlayerController? player, string startMsg, string logAction)
+    {
+        if (player == null || !player.IsValid) return;
+
+        if (!AdminManager.PlayerHasPermissions(player, "@css/root"))
+        {
+            player.PrintToChat($"{Localizer["prefix"]}You don't have permission to use this command.");
+            return;
+        }
+
+        player.PrintToChat($"{Localizer["prefix"]}{startMsg}");
+
+        int slot = player.Slot;
+        string playerName = player.PlayerName;
+        Task.Run(async () =>
+        {
+            try
+            {
+                var newSettings = await MVPSettingsLoader.LoadOrFetchAsync();
+                MVPSettings = newSettings;
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Localizer["prefix"]}MVP settings updated successfully! Version: {newSettings.Version}");
+                });
+                Logger.LogInformation($"[MVP-Anthem] Admin {playerName} {logAction}");
+            }
+            catch (Exception ex)
+            {
+                Server.NextFrame(() =>
+                {
+                    var p = Utilities.GetPlayerFromSlot(slot);
+                    if (p != null && p.IsValid && p.Connected == PlayerConnectedState.PlayerConnected)
+                        p.PrintToChat($"{Localizer["prefix"]}Failed: {ex.Message}");
+                });
+                Logger.LogError($"[MVP-Anthem] Error: {ex.Message}");
             }
         });
     }
