@@ -1,21 +1,34 @@
-using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
-using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Modules.Timers;
 using Microsoft.Extensions.Logging;
 using static MVPAnthem.MVPAnthem;
+using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
 
 namespace MVPAnthem;
 
 public static class Events
 {
     private static Timer? _centerHtmlTimer;
+    private static Timer? _centerHtmlTickTimer;
     private static bool _isCenterHtmlActive;
     private static string _htmlMessage = "";
-    private static string? _lastMvpSound;
-    private static Timer? _tickTimer;
 
-    public static void PlaySoundToPlayer(CCSPlayerController player, MVP_Settings mvpSettings)
+    /// <summary>
+    /// Emit MVP sound on every human player (self-to-self).
+    /// Sound is non-positional via vsndevts settings (use_hrtf=0, distance_max=100000).
+    /// Called ONCE — no need to re-emit.
+    /// </summary>
+    public static void EmitSoundOnAllPlayers(string soundName)
+    {
+        foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
+            p.EmitSound(soundName, p, 1.0f);
+    }
+
+    /// <summary>
+    /// Preview: emit sound on a single player (self-to-self), one time only.
+    /// </summary>
+    public static void PlayPreviewToPlayer(CCSPlayerController player, MVP_Settings mvpSettings)
     {
         if (!player.IsValid) return;
         player.EmitSound(mvpSettings.MVPSound, player, 1.0f);
@@ -33,7 +46,9 @@ public static class Events
     public static void Dispose()
     {
         _centerHtmlTimer?.Kill();
-        _tickTimer?.Kill();
+        _centerHtmlTimer = null;
+        _centerHtmlTickTimer?.Kill();
+        _centerHtmlTickTimer = null;
     }
 
     private static string? GetLocalizedMessage(string mvpKey, string messageType)
@@ -55,12 +70,11 @@ public static class Events
 
     private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
-        _lastMvpSound = null;
         _isCenterHtmlActive = false;
         _centerHtmlTimer?.Kill();
         _centerHtmlTimer = null;
-        _tickTimer?.Kill();
-        _tickTimer = null;
+        _centerHtmlTickTimer?.Kill();
+        _centerHtmlTickTimer = null;
 
         return HookResult.Continue;
     }
@@ -132,39 +146,53 @@ public static class Events
 
         var localizer = Instance.Localizer;
         var timer = Instance.Config.Timer;
-        _lastMvpSound = mvpSound;
 
-        foreach (var p in Utilities.GetPlayers().Where(p => !p.IsBot && !p.IsHLTV))
+        // Emit sound ONCE on every player (self-to-self)
+        // Non-positional via vsndevts: use_hrtf=0, distance_max=100000
+        EmitSoundOnAllPlayers(mvpSound);
+
+        // Prepare HTML message once (outside player loop)
+        string? htmlMsg = null;
+        if (mvpSettings.ShowHtmlMessage)
         {
-            if (p.IsValid)
-                PlaySoundToPlayer(p, mvpSettings);
+            htmlMsg = GetLocalizedMessage(mvpKey, "html");
+            if (htmlMsg != null)
+                htmlMsg = string.Format(htmlMsg, mvpPlayer.PlayerName, mvpSettings.MVPName);
+        }
 
+        foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
+        {
             if (mvpSettings.ShowChatMessage)
             {
                 var msg = GetLocalizedMessage(mvpKey, "chat");
                 if (msg != null)
                     p.PrintToChat(localizer["prefix"] + string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName));
             }
-
-            if (mvpSettings.ShowHtmlMessage)
-            {
-                var msg = GetLocalizedMessage(mvpKey, "html");
-                if (msg != null)
-                {
-                    _htmlMessage = string.Format(msg, mvpPlayer.PlayerName, mvpSettings.MVPName);
-                    _isCenterHtmlActive = true;
-                    _centerHtmlTimer?.Kill();
-                    _centerHtmlTimer = Instance.AddTimer(timer.CenterHtmlDuration, () => { _isCenterHtmlActive = false; _centerHtmlTimer = null; });
-                }
-            }
         }
 
-        if (_isCenterHtmlActive)
+        // Setup center HTML display (once, not per-player)
+        if (htmlMsg != null)
         {
-            _tickTimer?.Kill();
-            _tickTimer = Instance.AddTimer(0.1f, () =>
+            _htmlMessage = htmlMsg;
+            _isCenterHtmlActive = true;
+            _centerHtmlTimer?.Kill();
+            _centerHtmlTimer = Instance.AddTimer(timer.CenterHtmlDuration, () =>
             {
-                if (!_isCenterHtmlActive) { _tickTimer?.Kill(); _tickTimer = null; return; }
+                _isCenterHtmlActive = false;
+                _centerHtmlTimer = null;
+                _centerHtmlTickTimer?.Kill();
+                _centerHtmlTickTimer = null;
+            });
+
+            _centerHtmlTickTimer?.Kill();
+            _centerHtmlTickTimer = Instance.AddTimer(0.1f, () =>
+            {
+                if (!_isCenterHtmlActive)
+                {
+                    _centerHtmlTickTimer?.Kill();
+                    _centerHtmlTickTimer = null;
+                    return;
+                }
 
                 foreach (var p in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && !p.IsHLTV))
                     p.PrintToCenterHtml($"{_htmlMessage}</div>");

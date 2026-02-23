@@ -133,7 +133,7 @@ public static class MVPMenu
             items.Add(new MenuItem(MenuItemType.Button, [new MenuValue(localizer["preview<option>"])]));
             optionMap[i++] = () =>
             {
-                Events.PlaySoundToPlayer(player, mvp);
+                Events.PlayPreviewToPlayer(player, mvp);
                 player.PrintToChat(localizer["prefix"] + localizer["mvp.previewed", mvp.MVPName]);
             };
         }

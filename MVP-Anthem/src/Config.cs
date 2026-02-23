@@ -43,6 +43,9 @@ public class Timer_Config
 {
     [JsonPropertyName("CenterHtmlDuration")]
     public int CenterHtmlDuration { get; set; } = 7;
+
+    [JsonPropertyName("SoundDuration")]
+    public float SoundDuration { get; set; } = 10.0f;
 }
 
 public class CategorySettings
@@ -148,7 +151,8 @@ public static class ConfigLoader
             },
             Timer = new Timer_Config
             {
-                CenterHtmlDuration = 7
+                CenterHtmlDuration = 7,
+                SoundDuration = 10.0f
             }
         };
 
@@ -282,8 +286,8 @@ public static class MVPSettingsLoader
                             {
                                 "mvp.1", new MVP_Settings
                                 {
-                                    MVPName = "Flawless",
-                                    MVPSound = "MVP.001_bamia",
+                                    MVPName = "Ai Dua Em Ve",
+                                    MVPSound = "MVP.001_ai_dua_em_ve",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
                                     ShowHtmlMessage = true,
@@ -294,8 +298,8 @@ public static class MVPSettingsLoader
                             {
                                 "mvp.2", new MVP_Settings
                                 {
-                                    MVPName = "Ace",
-                                    MVPSound = "MVP.002_ace",
+                                    MVPName = "Babe Get My Gun",
+                                    MVPSound = "MVP.001_babegetmygun",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
                                     ShowHtmlMessage = true,
@@ -315,8 +319,8 @@ public static class MVPSettingsLoader
                             {
                                 "mvp.vip.1", new MVP_Settings
                                 {
-                                    MVPName = "VIP Exclusive",
-                                    MVPSound = "MVP.vip_001",
+                                    MVPName = "Despacito Mixi",
+                                    MVPSound = "MVP.001F_despacito_mixi",
                                     EnablePreview = true,
                                     ShowChatMessage = true,
                                     ShowHtmlMessage = true,

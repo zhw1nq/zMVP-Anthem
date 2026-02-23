@@ -2,321 +2,258 @@
 {
     event.base = 
     {
-        type = "csgo_music"
+        type = "csgo_mega"
         volume = 1.000000
-        volume_convar = "snd_menumusic_volume"
-        priority = 5.000000
-        stop_music = "true"
-        volume_fade_out_input_max = 1.000000
-        loop_track = "true"
-        should_queue_track = "true"
-        skip_if_muted = "true"
-        block_won_lost = "true"
-        startpoint_01 = 0.000000
-        startpoint_02 = 0.000000
-        startpoint_03 = 0.000000
-        endpoint_01 = 0.000000
-        endpoint_02 = 0.000000
-        endpoint_03 = 0.000000
-        syncpoints_01 = 
+        pitch = 1.000000
+        use_hrtf = 0
+        use_distance_volume_mapping_curve = true
+        distance_effect_mix = 0.000000
+        occlusion_frequency_scale = 0.000000
+        distance_volume_mapping_curve = 
         [
-            0.000000,
-        ]
-        syncpoints_02 = 
-        [
-            0.000000,
-        ]
-        syncpoints_03 = 
-        [
-            0.000000,
+            
+            [
+                0.000000,
+                1.000000,
+                0.000000,
+                0.000000,
+                2.000000,
+                3.000000,
+            ],
+            
+            [
+                500000.000000,
+                1.000000,
+                0.000000,
+                0.000000,
+                2.000000,
+                3.000000,
+            ],
+            
+            [
+                999999.000000,
+                1.000000,
+                0.000000,
+                0.000000,
+                2.000000,
+                3.000000,
+            ],
         ]
     }
     MVP.001_ai_dua_em_ve = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_ai-dua-em-ve.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_ai-dua-em-ve.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_babegetmygun = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_babegetmygun.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_babegetmygun.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_bac_phan_future = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_bac-phan-future.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_bac-phan-future.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_bang_bang = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_bang-bang.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_bang-bang.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_basubeso = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_basubeso.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_basubeso.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_bitchthesong = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_bitchthesong.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_bitchthesong.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_doan_tuyet_nang_di = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_doan-tuyet-nang-di.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_doan-tuyet-nang-di.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_doodle_dance = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_doodle-dance.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_doodle-dance.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_drift_barbie = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_drift-barbie.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_drift-barbie.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_fashion = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_fashion.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_fashion.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_hashire_umamusume = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_hashire-umamusume.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_hashire-umamusume.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_impacta = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_impacta.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_impacta.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_india_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_india-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_india-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_khuc_tinh_ca_thanh_hoa = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_khuc-tinh-ca-thanh-hoa.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_khuc-tinh-ca-thanh-hoa.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_mask_off = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_mask-off.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_mask-off.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_max_verstappen = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_max-verstappen.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_max-verstappen.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_moonwalkin = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_moonwalkin.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_moonwalkin.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_naeni = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_naeni.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_naeni.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_no_batidao = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_no-batidao.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_no-batidao.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_not_like_us = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_not-like-us.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_not-like-us.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_nword = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_nword.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_nword.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_rap_cham_thoi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_rap-cham-thoi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_rap-cham-thoi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_renai = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_renai.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_renai.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_sigma_boy = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_sigma-boy.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_sigma-boy.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_stream_den_bao_gio = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_stream-den-bao-gio.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_stream-den-bao-gio.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_thuyskieu = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_thuyskieu.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_thuyskieu.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_tocatoca = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_tocatoca.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_tocatoca.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_trinh = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_trinh.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_trinh.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_vi_cua_anh = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_vi-cua-anh.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_vi-cua-anh.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_whymeisgay = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_whymeisgay.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_whymeisgay.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001_y_que_fue = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001_y-que-fue.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001_y-que-fue.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001F_despacito_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001F_despacito-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001F_despacito-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001F_mot_ngay_chang_nang_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001F_mot-ngay-chang-nang-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001F_mot-ngay-chang-nang-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001F_ngay_xuan_long_phung_sum_vay_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001F_ngay-xuan-long-phung-sum-vay-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001F_ngay-xuan-long-phung-sum-vay-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001F_tet_nay_con_se_ve_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001F_tet-nay-con-se-ve-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001F_tet-nay-con-se-ve-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
     MVP.001F_wo_men_bu_yi_yang_mixi = 
     {
         base = "event.base"
-        vsnd_files = 
-        [
-            "sounds/mvp/001/001F_wo-men-bu-yi-yang-mixi.vsnd",
-        ]
+        vsnd_files_track_01 = "sounds/mvp/001/001F_wo-men-bu-yi-yang-mixi.vsnd"
+        vsnd_duration = 10.000000
     }
 }
